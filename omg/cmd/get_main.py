@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from typing import Any
+
 import json
 import sys
 import yaml
@@ -11,11 +13,16 @@ from omg.common.resource_map import map_res, map
 
 def get_resources(r_type, r_name="_all", ns=None, print_warnings=True):
     rt_info = map_res(r_type)
-    get_func = rt_info["get_func"]
+    get_func: Any = rt_info["get_func"]
     yaml_loc = rt_info["yaml_loc"]
     need_ns = rt_info["need_ns"]
-
-    return get_func(ns, r_name, yaml_loc, need_ns, print_warnings)
+    key_trace = None
+    try:
+        if rt_info["key_trace"]:
+            key_trace = rt_info["key_trace"]
+    except Exception as err:
+        pass
+    return get_func(ns, r_name, yaml_loc, need_ns, key_trace, print_warnings)
 
 
 def get_resource_names(r_type, r_name="_all", ns=None):

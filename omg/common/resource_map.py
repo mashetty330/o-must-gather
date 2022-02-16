@@ -23,6 +23,10 @@ from omg.cmd.get.ep_out import ep_out
 from omg.cmd.get.eps_out import eps_out
 from omg.cmd.get.ev_out import ev_out
 from omg.cmd.get.from_yaml import from_yaml
+from omg.cmd.get.scv_out import scv_out
+from omg.cmd.get.ocv_out import ocv_out
+from omg.cmd.get.scs_out import scs_out
+from omg.cmd.get.platform_out import platform_out
 from omg.cmd.get.get_project import get_project
 from omg.cmd.get.hpa_out import hpa_out
 from omg.cmd.get.is_out import is_out
@@ -621,6 +625,42 @@ map = [
         "get_func": from_yaml,
         "getout_func": hostsubnets_out,
         "yaml_loc": "cluster-scoped-resources/network.openshift.io/hostsubnets",
+    },
+    {
+        "type": "storageclusterversion",
+        "aliases": ["scv"],
+        "need_ns": True,
+        "get_func": from_yaml,
+        "getout_func": scv_out,
+        "key_trace": "metadata/name,spec/version",
+        "yaml_loc": "namespaces/%s/oc_output/storagecluster.yaml",
+    },
+    {
+        "type": "storageclustersecurity",
+        "aliases": ["scs"],
+        "need_ns": True,
+        "get_func": from_yaml,
+        "getout_func": scs_out,
+        "key_trace": "metadata/name,spec/encryption",
+        "yaml_loc": "namespaces/%s/oc_output/storagecluster.yaml",
+    },
+{
+        "type": "platform",
+        "aliases": ["platform", "infra"],
+        "need_ns": False,
+        "get_func": from_yaml,
+        "getout_func": platform_out,
+        "key_trace": "metadata/name,spec/platformSpec/type",
+        "yaml_loc": "cluster-scoped-resources/config.openshift.io/infrastructures/cluster.yaml",
+    },
+    {
+        "type": "ocpversion",
+        "aliases": ["ocpclusterversion", "ocv"],
+        "need_ns": False,
+        "get_func": from_yaml,
+        "getout_func": ocv_out,
+        "key_trace": "metadata/name,status/desired/version",
+        "yaml_loc": "cluster-scoped-resources/config.openshift.io/clusterversions/version.yaml",
     },
 ]
 
