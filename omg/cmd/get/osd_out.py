@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-from tabulate import tabulate
+import re
 
+from tabulate import tabulate
 from omg.common.helper import age, extract_labels
 
 
 # Special function to output pod
 # Generate output table if -o not set or 'wide'
 # We will create an array of array and then print if with tabulate
-def pod_out(t, ns, res, output, show_type, show_labels, show_output):
-
+def osd_out(t, ns, res, output, show_type, show_labels, show_output):
     output_pods = [[]]
     # header
     if ns == "_all":
@@ -29,14 +29,17 @@ def pod_out(t, ns, res, output, show_type, show_labels, show_output):
     for pod in res:
         p = pod["res"]
         row = []
+        name = p["metadata"]["name"]
+        if not re.match(r'^rook-ceph-osd-[0-9]+', name):
+            continue
         # namespace (for --all-namespaces)
         if ns == "_all":
             row.append(p["metadata"]["namespace"])
         # name
         if show_type:
-            row.append(t + "/" + p["metadata"]["name"])
+            row.append(t + "/" + name)
         else:
-            row.append(p["metadata"]["name"])
+            row.append(name)
         # containers/ready count
         if "containers" in p["spec"]:
             containers = str(len(p["spec"]["containers"]))
@@ -76,5 +79,6 @@ def pod_out(t, ns, res, output, show_type, show_labels, show_output):
             row.append(extract_labels(p))
 
         output_pods.append(row)
+
     if show_output:
         print(tabulate(output_pods, tablefmt="plain"))

@@ -5,12 +5,13 @@ from omg.common.helper import age
 
 
 # SCV out put with just name and version
-def ocv_out(t, ns, res, output, show_type, show_labels):
+def ocv_out(t, ns, res, output, show_type, show_labels, show_output):
     output_res = [[]]
     # header
     #if ns == "_all":
         #output_res[0].append("NAMESPACE")
     output_res[0].extend(["NAME", "VERSION"])
+    ocp_version = []
     # resources
     for r in res:
         keys = list(r.keys())
@@ -22,7 +23,7 @@ def ocv_out(t, ns, res, output, show_type, show_labels):
             version = r["version"]
         except Exception as err:
             version = r[keys[1]]
-
+        ocp_version.append(version)
         row = []
         # namespace (for --all-namespaces)
         #if ns == "_all":
@@ -39,5 +40,6 @@ def ocv_out(t, ns, res, output, show_type, show_labels):
             row.append("Unknown")
 
         output_res.append(row)
-
-    print(tabulate(output_res, tablefmt="plain"))
+    if show_output:
+        print(tabulate(output_res, tablefmt="plain"))
+    return ocp_version

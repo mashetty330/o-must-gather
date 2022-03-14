@@ -7,6 +7,7 @@ from omg import version
 from omg.cmd.describe import describe
 from omg.cmd.get.complete_get import complete_get
 from omg.cmd.get_main import get_main
+from omg.cmd.get_storage_details import get_storage_details
 from omg.cmd.log import log, complete_pods, complete_containers
 from omg.cmd.machine_config.machine_config import machine_config, complete_mc
 from omg.cmd.project import project, projects, complete_projects
@@ -77,12 +78,17 @@ def projects_cmd():
     type=bool,
     help="When printing, show all labels as the last column (default hide labels column)",
 )
+@click.option("--count", is_flag=True, type=bool, help="count the number of resources and show only that in the output")
 @global_namespace_options
-def get_cmd(objects, output, namespace, all_namespaces, show_labels):
+def get_cmd(objects, output, namespace, all_namespaces, show_labels, count):
     """
     Display one or many resources
     """
-    get_main(objects, output, namespace, all_namespaces, show_labels)
+    object_name = objects[0]
+    if object_name in ["storageclusterdetails", "scd", "storagedetails", "ocsclusterdetails", "ocsdetails"]:
+        get_storage_details()
+    else:
+        get_main(objects, output, namespace, all_namespaces, show_labels, count, True)
 
 
 @cli.command("describe")

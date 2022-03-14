@@ -39,6 +39,7 @@ from omg.cmd.get.mwhc_out import mwhc_out
 from omg.cmd.get.node_out import node_out
 from omg.cmd.get.np_out import networkpolicy_out
 from omg.cmd.get.pod_out import pod_out
+from omg.cmd.get.osd_out import osd_out
 from omg.cmd.get.project_out import project_out
 from omg.cmd.get.pv_out import pv_out
 from omg.cmd.get.pvc_out import pvc_out
@@ -661,6 +662,14 @@ map = [
         "getout_func": ocv_out,
         "key_trace": "metadata/name,status/desired/version",
         "yaml_loc": "cluster-scoped-resources/config.openshift.io/clusterversions/version.yaml",
+    },
+    {
+        "type": "osd",
+        "aliases": ["osds"],
+        "need_ns": True,
+        "get_func": from_yaml,
+        "getout_func": osd_out,
+        "yaml_loc": "namespaces/%s/core/pods.yaml",
     },
 ]
 

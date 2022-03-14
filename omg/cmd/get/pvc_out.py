@@ -4,7 +4,7 @@ from tabulate import tabulate
 from omg.common.helper import age
 
 
-def pvc_out(t, ns, res, output, show_type, show_labels):
+def pvc_out(t, ns, res, output, show_type, show_labels, show_output):
     output_res = [[]]
     # header
     if ns == "_all":
@@ -65,4 +65,5 @@ def pvc_out(t, ns, res, output, show_type, show_labels):
 
         output_res.append(row)
 
-    print(tabulate(output_res, tablefmt="plain"))
+    if show_output:
+        print(tabulate(output_res, tablefmt="plain"))

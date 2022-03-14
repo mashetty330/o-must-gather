@@ -55,7 +55,6 @@ def from_yaml(ns, names, yaml_loc, need_ns, key_trace, print_warnings=True):
             if print_warnings:
                 print("[ERROR] Could not read file:", yp)
             sys.exit(1)
-
         # add objects to collected if name matches
         # or if we want to get all the objects (e.g `get pods`)
         if not key_trace:
@@ -124,7 +123,6 @@ def from_yaml(ns, names, yaml_loc, need_ns, key_trace, print_warnings=True):
                 collected.extend(
                     [collect]
                 )
-
     return collected
 
 
