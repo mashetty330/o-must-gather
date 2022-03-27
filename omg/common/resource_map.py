@@ -53,6 +53,7 @@ from omg.cmd.get.simple_out import simple_out
 from omg.cmd.get.ss_out import ss_out
 from omg.cmd.get.va_out import va_out
 from omg.cmd.get.vwhc_out import vwhc_out
+from omg.cmd.get.node_det_out import node_det_out
 from omg.cmd.get.netnamespaces_out import netnamespaces_out
 from omg.cmd.get.hostsubnets_out import hostsubnets_out
 import omg.cmd.get.olm as get_olm
@@ -660,7 +661,8 @@ map = [
         "need_ns": False,
         "get_func": from_yaml,
         "getout_func": ocv_out,
-        "key_trace": "metadata/name,status/desired/version",
+        "key_trace": "metadata/name,"
+                     "status/desired/version",
         "yaml_loc": "cluster-scoped-resources/config.openshift.io/clusterversions/version.yaml",
     },
     {
@@ -670,6 +672,19 @@ map = [
         "get_func": from_yaml,
         "getout_func": osd_out,
         "yaml_loc": "namespaces/%s/core/pods.yaml",
+    },
+    {
+        "type": "node-details",
+        "aliases": ["nodedetails", "nd"],
+        "need_ns": False,
+        "get_func": from_yaml,
+        "getout_func": node_det_out,
+        "key_trace": "metadata/name,"
+                     "status/nodeInfo/architecture,"
+                     "status/nodeInfo/kernelVersion,"
+                     "status/nodeInfo/operatingSystem,"
+                     "status/nodeInfo/osImage",
+        "yaml_loc": "cluster-scoped-resources/core/nodes",
     },
 ]
 

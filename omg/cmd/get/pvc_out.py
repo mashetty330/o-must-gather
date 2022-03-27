@@ -67,3 +67,5 @@ def pvc_out(t, ns, res, output, show_type, show_labels, show_output):
 
     if show_output:
         print(tabulate(output_res, tablefmt="plain"))
+    return output_res
+
