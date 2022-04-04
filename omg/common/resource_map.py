@@ -56,6 +56,7 @@ from omg.cmd.get.vwhc_out import vwhc_out
 from omg.cmd.get.node_det_out import node_det_out
 from omg.cmd.get.netnamespaces_out import netnamespaces_out
 from omg.cmd.get.hostsubnets_out import hostsubnets_out
+from omg.cmd.get.ceph_version_out import ceph_version_out
 import omg.cmd.get.olm as get_olm
 from omg.common.config import Config
 
@@ -683,8 +684,18 @@ map = [
                      "status/nodeInfo/architecture,"
                      "status/nodeInfo/kernelVersion,"
                      "status/nodeInfo/operatingSystem,"
-                     "status/nodeInfo/osImage",
+                     "status/nodeInfo/osImage,"
+                     "status/allocatable/hugepages-2Mi",
         "yaml_loc": "cluster-scoped-resources/core/nodes",
+    },
+    {
+        "type": "cephversion",
+        "aliases": ["cv"],
+        "need_ns": True,
+        "get_func": from_yaml,
+        "getout_func": ceph_version_out,
+        "key_trace": "status/version/version",
+        "yaml_loc": "ceph/namespaces/%s/ceph.rook.io/cephclusters/ocs-storagecluster-cephcluster.yaml",
     },
 ]
 

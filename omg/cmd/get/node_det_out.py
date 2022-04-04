@@ -10,7 +10,7 @@ def node_det_out(t, ns, res, output, show_type, show_labels, show_output):
     # header
     #if ns == "_all":
         #output_res[0].append("NAMESPACE")
-    output_res[0].extend(["NAME", "ARCHITECTURE", "KERNEL VERSION", "OPERATING SYSTEM", "OS IMAGE"])
+    output_res[0].extend(["NAME", "ARCHITECTURE", "KERNEL VERSION", "OPERATING SYSTEM", "OS IMAGE", "HUGEPAGES-2MI"])
     # resources
     for r in res:
         keys = list(r.keys())
@@ -38,7 +38,10 @@ def node_det_out(t, ns, res, output, show_type, show_labels, show_output):
         except Exception as err:
             osImage = r[keys[1]]
 
-
+        try:
+            hugepages = r["hugepages-2Mi"]
+        except Exception as err:
+            hugepages = [keys[1]]
         row = []
         # namespace (for --all-namespaces)
         #if ns == "_all":
@@ -53,6 +56,7 @@ def node_det_out(t, ns, res, output, show_type, show_labels, show_output):
         row.append(kernelVersion)
         row.append(operatingSystem)
         row.append(osImage)
+        row.append(hugepages)
         output_res.append(row)
     if show_output:
         print(tabulate(output_res, tablefmt="plain"))

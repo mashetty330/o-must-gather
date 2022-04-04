@@ -7,7 +7,6 @@ from omg import version
 from omg.cmd.describe import describe
 from omg.cmd.get.complete_get import complete_get
 from omg.cmd.get_main import get_main
-from omg.cmd.get_storage_details import get_storage_details
 from omg.cmd.log import log, complete_pods, complete_containers
 from omg.cmd.machine_config.machine_config import machine_config, complete_mc
 from omg.cmd.project import project, projects, complete_projects
@@ -85,9 +84,6 @@ def get_cmd(objects, output, namespace, all_namespaces, show_labels, count):
     """
     Display one or many resources
     """
-    # object_name = objects[0]
-    # if object_name in ["storageclusterdetails", "scd", "storagedetails", "ocsclusterdetails", "ocsdetails"]:
-    #     get_storage_details()
     r_dict = check_if_custom(objects)
     if r_dict:
         print_custom_output(r_dict, objects)

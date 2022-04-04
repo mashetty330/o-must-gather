@@ -27,7 +27,7 @@ custom_map = [
                 "count": False,
                 "show_output": False,
                 "custom_str": "OCS version",
-                "intermediate_str": None,
+                "intermediate_str": "\n----VERSIONS----",
                 "key": 1,
             },
             {
@@ -43,6 +43,18 @@ custom_map = [
                 "key": 1,
             },
             {
+                "name": ("cv",),
+                "output": None,
+                "namespace": "openshift-storage",
+                "all_namespaces": False,
+                "show_labels": False,
+                "count": False,
+                "show_output": False,
+                "custom_str": "Ceph version",
+                "intermediate_str": None,
+                "key": 0,
+            },
+            {
                 "name": ("scs",),
                 "output": None,
                 "namespace": "openshift-storage",
@@ -51,7 +63,7 @@ custom_map = [
                 "count": False,
                 "show_output": False,
                 "custom_str": "Cluster encryption",
-                "intermediate_str": None,
+                "intermediate_str": "\n----SECURITY----",
                 "key": 1,
             },
             {
@@ -143,7 +155,7 @@ def print_custom_output(r_dict, objects):
         out = get_main(objects=r["name"], output=r["output"], namespace=r["namespace"], all_namespaces=r["all_namespaces"], show_labels=r["show_labels"], show_output=r["show_output"], count=r["count"])
         if r["count"]:
             print(f"{c_str}: {out}")
-        elif key:
+        elif key is not None:
             print(f"{c_str}: {out[1][key]}")
         else:
             print(f"{c_str}:")
