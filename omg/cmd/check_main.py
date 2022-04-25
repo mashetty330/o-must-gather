@@ -1,5 +1,4 @@
 import sys
-
 from omg.cmd.check.check_method import check_flexible, check_connected, check_noobaa, check_external, check_lso
 
 check_map = [
