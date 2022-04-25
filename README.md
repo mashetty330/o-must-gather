@@ -10,7 +10,7 @@ oc like tool that works with must-gather rather than OpenShift API
 
 Simply run:
 
-    $ pip3 install o-must-gather --user
+    $ pip3 install git+https://github.com/mashetty330/o-must-gather.git@stable
 
 ## Usage
 
