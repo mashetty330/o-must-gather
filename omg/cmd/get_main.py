@@ -14,6 +14,7 @@ from omg.common.resource_map import map_res, map
 
 custom_get = ["storageclusterdetails", "scd", "storagedetails", "ocsclusterdetails", "ocsdetails"]
 
+
 def get_resources(r_type, r_name="_all", ns=None, print_warnings=True):
     rt_info = map_res(r_type)
     get_func: Any = rt_info["get_func"]

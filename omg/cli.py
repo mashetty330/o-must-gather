@@ -12,6 +12,7 @@ from omg.cmd.machine_config.machine_config import machine_config, complete_mc
 from omg.cmd.project import project, projects, complete_projects
 from omg.common.custom_output import check_if_custom, print_custom_output
 from omg.cmd.use import use
+from omg.cmd.check_main import check
 from omg.cmd.whoami import whoami
 from omg.completion import bash
 from omg.cmd.parser import parser_main
@@ -67,6 +68,11 @@ def projects_cmd():
     Display information about the current active project and existing projects
     """
     projects()
+
+@cli.command("check")
+@click.argument("something", nargs=-1)
+def check_cmd(something):
+    check(something)
 
 
 @cli.command("get")

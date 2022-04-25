@@ -1,5 +1,7 @@
 from tabulate import tabulate
 from omg.cmd.get_main import get_main
+from omg.cmd.get_main import get_main
+from omg.cmd.check_main import check
 
 custom_map = [
     {
@@ -17,6 +19,7 @@ custom_map = [
                 "custom_str": "Platform",
                 "intermediate_str": None,
                 "key": 1,
+                "func": "get_main",
             },
             {
                 "name": ("scv",),
@@ -29,6 +32,7 @@ custom_map = [
                 "custom_str": "OCS version",
                 "intermediate_str": "\n----VERSIONS----",
                 "key": 1,
+                "func": "get_main",
             },
             {
                 "name": ("ocv",),
@@ -41,6 +45,7 @@ custom_map = [
                 "custom_str": "OCP version",
                 "intermediate_str": None,
                 "key": 1,
+                "func": "get_main",
             },
             {
                 "name": ("cv",),
@@ -53,6 +58,7 @@ custom_map = [
                 "custom_str": "Ceph version",
                 "intermediate_str": None,
                 "key": 0,
+                "func": "get_main",
             },
             {
                 "name": ("scs",),
@@ -65,6 +71,7 @@ custom_map = [
                 "custom_str": "Cluster encryption",
                 "intermediate_str": "\n----SECURITY----",
                 "key": 1,
+                "func": "get_main",
             },
             {
                 "name": ("nodes",),
@@ -77,6 +84,7 @@ custom_map = [
                 "custom_str": "Number of Nodes",
                 "intermediate_str": " ",
                 "key": None,
+                "func": "get_main",
             },
             {
                 "name": ("pvc",),
@@ -89,6 +97,7 @@ custom_map = [
                 "custom_str": "Number of PVCs",
                 "intermediate_str": None,
                 "key": None,
+                "func": "get_main",
             },
             {
                 "name": ("osd",),
@@ -101,6 +110,31 @@ custom_map = [
                 "custom_str": "Number of OSDs",
                 "intermediate_str": None,
                 "key": None,
+                "func": "get_main",
+            },
+            {
+                "name": ("noobaa",),
+                "custom_str": "Is Noobaa enabled?",
+                "intermediate_str": " ",
+                "func": "check",
+            },
+            {
+                "name": ("connected",),
+                "custom_str": "Is cluster connected/disconnected?",
+                "intermediate_str": None,
+                "func": "check",
+            },
+            {
+                "name": ("external",),
+                "custom_str": "Is cluster Internal/External?",
+                "intermediate_str": None,
+                "func": "check",
+            },
+            {
+                "name": ("lso",),
+                "custom_str": "Does cluster have local storage?",
+                "intermediate_str": None,
+                "func": "check",
             },
             {
                 "name": ("node-details",),
@@ -113,6 +147,7 @@ custom_map = [
                 "custom_str": "Node details",
                 "intermediate_str": " ",
                 "key": None,
+                "func": "get_main",
             },
         ],
         "custom_str": "STORAGE CLUSTER DETAILS",
@@ -150,15 +185,25 @@ def print_custom_output(r_dict, objects):
         int_str=r["intermediate_str"]
         if int_str:
             print(f"{int_str}")
-        key = r["key"]
         c_str = r["custom_str"]
-        out = get_main(objects=r["name"], output=r["output"], namespace=r["namespace"], all_namespaces=r["all_namespaces"], show_labels=r["show_labels"], show_output=r["show_output"], count=r["count"])
-        if r["count"]:
+        func = r["func"]
+        if func == "get_main":
+            out = get_main(objects=r["name"],
+                           output=r["output"],
+                           namespace=r["namespace"],
+                           all_namespaces=r["all_namespaces"],
+                           show_labels=r["show_labels"],
+                           show_output=r["show_output"],
+                           count=r["count"])
+            key = r["key"]
+            if r["count"]:
+                print(f"{c_str}: {out}")
+            elif key is not None:
+                print(f"{c_str}: {out[1][key]}")
+            else:
+                print(f"{c_str}:")
+                print(tabulate(out, headers="firstrow", tablefmt="orgtbl"))
+        elif func == "check":
+            out = check(something=r["name"], show_output=False)
             print(f"{c_str}: {out}")
-        elif key is not None:
-            print(f"{c_str}: {out[1][key]}")
-        else:
-            print(f"{c_str}:")
-            print(tabulate(out, headers="firstrow", tablefmt="orgtbl"))
-
     print()
