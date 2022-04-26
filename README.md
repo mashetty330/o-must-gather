@@ -32,6 +32,7 @@ Use it like oc:
     # omg get pods -o wide
 
 ODF specific:
+
     # omg get scd ---> gets the full storage cluster details
 
 ## Additional Features
