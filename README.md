@@ -2,7 +2,7 @@
 
 oc like tool that works with must-gather rather than OpenShift API
 
-Important Note: This fork is an extension of original project and has feature specific to ODF must-gather which isn't available in the original project. So to avail these make sure you follow the exact steps mentioned below. 
+Important Note: This fork is an extension of original project and has feature specific to ODF must-gather which isn't available in the original project. So to avail these make sure you follow the exact steps mentioned below as there is no official release for this.
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/kxr/o-must-gather)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/o-must-gather)
