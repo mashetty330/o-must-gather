@@ -72,7 +72,6 @@ def get_main(objects, output, namespace, all_namespaces, show_labels, count, sho
 
     for r_type, r_name in resource_list:
         res = get_resources(r_type, r_name, ns)
-
         if len(res) > 0:
             # If printing multiple objects, add a blank line between each
             if count:
@@ -120,7 +119,6 @@ def get_main(objects, output, namespace, all_namespaces, show_labels, count, sho
             printed_something = True
 
     # Error out if nothing was printed
-    if not printed_something:
+    if not printed_something and show_output:
         print("No resources found in %s namespace" % ns)
-
     return result
