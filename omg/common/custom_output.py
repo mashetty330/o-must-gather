@@ -137,6 +137,12 @@ custom_map = [
                 "func": "check",
             },
             {
+                "name": ("ipi",),
+                "custom_str": "Is cluster IPI/UPI?",
+                "intermediate_str": None,
+                "func": "check",
+            },
+            {
                 "name": ("node-details",),
                 "output": None,
                 "namespace": None,
@@ -182,7 +188,7 @@ def print_custom_output(r_dict, objects):
     else:
         print(f"{fill}{r_type}{r_name}{fill}\n")
     for r in r_list:
-        int_str=r["intermediate_str"]
+        int_str = r["intermediate_str"]
         if int_str:
             print(f"{int_str}")
         c_str = r["custom_str"]
@@ -195,6 +201,10 @@ def print_custom_output(r_dict, objects):
                            show_labels=r["show_labels"],
                            show_output=r["show_output"],
                            count=r["count"])
+            if not out:
+                out = "No info available!!"
+                print(f"{c_str}: {out}")
+                continue
             key = r["key"]
             if r["count"]:
                 print(f"{c_str}: {out}")
@@ -205,5 +215,7 @@ def print_custom_output(r_dict, objects):
                 print(tabulate(out, headers="firstrow", tablefmt="orgtbl"))
         elif func == "check":
             out = check(something=r["name"], show_output=False)
+            if not out:
+                out = "No info available!!"
             print(f"{c_str}: {out}")
     print()

@@ -1,5 +1,5 @@
 import sys
-from omg.cmd.check.check_method import check_flexible, check_connected, check_noobaa, check_external, check_lso
+from omg.cmd.check.check_method import check_flexible, check_connected, check_noobaa, check_external, check_lso, check_ipi_upi
 
 check_map = [
     {
@@ -9,7 +9,7 @@ check_map = [
     },
     {
         "something": "connected",
-        "where_file": "namespaces/openshift-storage/operators.coreos.com/clusterserviceversions/ocs-operator.v4.10.0.yaml",
+        "where_file": "namespaces/openshift-storage/operators.coreos.com/clusterserviceversions/",
         "how_func": check_connected,
     },
     {
@@ -27,6 +27,11 @@ check_map = [
         "where_file": "cluster-scoped-resources/core/persistentvolumes",
         "how_func": check_lso,
     },
+    {
+        "something": "ipi",
+        "where_file": "namespaces/openshift-machine-api/machine.openshift.io/machines",
+        "how_func": check_ipi_upi,
+    }
 
 ]
 

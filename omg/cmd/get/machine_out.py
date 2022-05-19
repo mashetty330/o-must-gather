@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+import sys
+
 from tabulate import tabulate
 
+from omg.common.config import Config
 from omg.common.helper import age, extract_labels
 
 
-def machine_out(t, ns, res, output, show_type, show_labels):
+def machine_out(t, ns, res, output, show_type, show_labels, show_output):
     output_res = []
     # header
     header = []

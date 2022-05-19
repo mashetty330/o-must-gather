@@ -17,7 +17,14 @@ def check_connected(files_to_check, show_output=True):
 
     files = [f for f in files_to_check.split(",")]
     mg_path = Config().path
-    yaml_path = os.path.join(mg_path, files[0])
+
+    yaml_dir_path = os.path.join(mg_path, files[0])
+    files_in_dir = os.listdir(yaml_dir_path)
+    yaml_path = ""
+
+    for file in files_in_dir:
+        if "ocs-operator" in str(file) and file.endswith(".yaml"):
+            yaml_path = os.path.join(yaml_dir_path, file)
     try:
         res = load_yaml_file(yaml_path, print_warnings=True)
     except Exception as err:
@@ -61,6 +68,15 @@ def check_noobaa(files_to_check, show_output=True):
     files = [f for f in files_to_check.split(",")]
     mg_path = Config().path
     yaml_path = os.path.join(mg_path, files[0])
+
+    file_exists = os.path.exists(yaml_path)
+    if not file_exists:
+        status = "No info available!!"
+        if show_output:
+            print(status)
+        else:
+            return status
+
     try:
         res = load_yaml_file(yaml_path, print_warnings=True)
     except Exception as err:
@@ -82,8 +98,8 @@ def check_noobaa(files_to_check, show_output=True):
             if "noobaaCore" in res and "noobaaDB" in res:
                 status = "Nooba enabled"
             else:
-                status = -1
-                print("[ERROR] Unexpected error while checking")
+                status = "Nooba disabled"
+                #print("[ERROR] Unexpected error while checking")
         else:
             status = -1
             print("[ERROR] Unexpected error while checking")
@@ -104,6 +120,14 @@ def check_external(files_to_check, show_output=True):
     files = [f for f in files_to_check.split(",")]
     mg_path = Config().path
     yaml_path = os.path.join(mg_path, files[0])
+
+    file_exists = os.path.exists(yaml_path)
+    if not file_exists:
+        status = "No info available!!"
+        if show_output:
+            print(status)
+        else:
+            return status
     try:
         res = load_yaml_file(yaml_path, print_warnings=True)
     except Exception as err:
@@ -195,6 +219,35 @@ def check_lso(files_to_check, show_output=True):
         output = "No, doesnt have local storage"
     elif status == 1:
         output = "Yes, has local storage"
+    if show_output:
+        print(output)
+    else:
+        return output
+
+
+def check_ipi_upi(files_to_check, show_output=True):
+    files = [f for f in files_to_check.split(",")]
+    mg_path = Config().path
+    yaml_path = os.path.join(mg_path, files[0])
+    file_exists = os.path.exists(yaml_path)
+
+    output = ""
+    if "quay-io-rhceph-dev-ocs-must-gather" in mg_path:
+        output = "No info available to check if the cluster is IPI/UPI in the OCS Must-Gather"
+        if show_output:
+            print(output)
+            sys.exit(1)
+        else:
+            return output
+
+    if os.path.isdir(yaml_path):
+        if len(os.listdir(yaml_path)) > 0:
+            output = "IPI"
+        else:
+            output = "UPI"
+    else:
+        output = "UPI"
+
     if show_output:
         print(output)
     else:
