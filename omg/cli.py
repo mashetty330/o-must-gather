@@ -10,7 +10,9 @@ from omg.cmd.get_main import get_main
 from omg.cmd.log import log, complete_pods, complete_containers
 from omg.cmd.machine_config.machine_config import machine_config, complete_mc
 from omg.cmd.project import project, projects, complete_projects
+from omg.common.custom_output import check_if_custom, print_custom_output
 from omg.cmd.use import use
+from omg.cmd.check_main import check
 from omg.cmd.whoami import whoami
 from omg.completion import bash
 from omg.cmd.parser import parser_main
@@ -67,6 +69,11 @@ def projects_cmd():
     """
     projects()
 
+@cli.command("check")
+@click.argument("something", nargs=-1)
+def check_cmd(something):
+    check(something)
+
 
 @cli.command("get")
 @click.argument("objects", nargs=-1, autocompletion=complete_get)
@@ -77,12 +84,17 @@ def projects_cmd():
     type=bool,
     help="When printing, show all labels as the last column (default hide labels column)",
 )
+@click.option("--count", is_flag=True, type=bool, help="count the number of resources and show only that in the output")
 @global_namespace_options
-def get_cmd(objects, output, namespace, all_namespaces, show_labels):
+def get_cmd(objects, output, namespace, all_namespaces, show_labels, count):
     """
     Display one or many resources
     """
-    get_main(objects, output, namespace, all_namespaces, show_labels)
+    r_dict = check_if_custom(objects)
+    if r_dict:
+        print_custom_output(r_dict, objects)
+    else:
+        get_main(objects, output, namespace, all_namespaces, show_labels, count, True)
 
 
 @cli.command("describe")

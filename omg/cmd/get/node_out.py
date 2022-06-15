@@ -7,7 +7,7 @@ from omg.common.helper import age, extract_labels
 # Special function to output node
 # Generate output table if -o not set or 'wide'
 # We will create an array of array and then print if with tabulate
-def node_out(t, ns, res, output, show_type, show_labels):
+def node_out(t, ns, res, output, show_type, show_labels, show_output):
     output_nodes = []
     # header
     # we will append the header array at last after sorting
@@ -105,4 +105,5 @@ def node_out(t, ns, res, output, show_type, show_labels):
     sorted_output = sorted(output_nodes, key=lambda x: x[2])
     sorted_output.insert(0, header)
 
-    print(tabulate(sorted_output, tablefmt="plain"))
+    if show_output:
+        print(tabulate(sorted_output, tablefmt="plain"))

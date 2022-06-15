@@ -7,9 +7,10 @@ from omg.common.helper import load_yaml_file
 
 
 # This function finds the respective yamls and returns the resouces that match
-def from_yaml(ns, names, yaml_loc, need_ns, print_warnings=True):
+def from_yaml(ns, names, yaml_loc, need_ns, key_trace, print_warnings=True):
     mg_path = Config().path
     yaml_path = os.path.join(mg_path, yaml_loc)
+    header = []
     if need_ns:
         # Error out if it needs ns and its not set.
         if ns is None:
@@ -26,6 +27,9 @@ def from_yaml(ns, names, yaml_loc, need_ns, print_warnings=True):
             yaml_paths = [yaml_path % (ns)]
     else:
         yaml_paths = [yaml_path]
+
+    if key_trace is not None:
+        key_trace_list = get_key_trace_list(key_trace)
 
     yamls = []
     for ym in yaml_paths:
@@ -51,29 +55,83 @@ def from_yaml(ns, names, yaml_loc, need_ns, print_warnings=True):
             if print_warnings:
                 print("[ERROR] Could not read file:", yp)
             sys.exit(1)
-
         # add objects to collected if name matches
         # or if we want to get all the objects (e.g `get pods`)
-        if "items" in res:
-            # we got a list
-            if res["items"] is not None and len(res["items"]) > 0:
+        if not key_trace:
+            if "items" in res:
+                # we got a list
+                if res["items"] is not None and len(res["items"]) > 0:
+                    collected.extend(
+                        [
+                            {"res": r, "gen_ts": gen_ts}
+                            for r in res["items"]
+                            if r["metadata"]["name"] in names or "_all" in names
+                        ]
+                    )
+                # else the list was empty/none, we dont' add anything to collected
+            elif "metadata" in res:
+                # we got a single item
                 collected.extend(
-                    [
-                        {"res": r, "gen_ts": gen_ts}
-                        for r in res["items"]
-                        if r["metadata"]["name"] in names or "_all" in names
-                    ]
+                    [{"res": res, "gen_ts": gen_ts}]
+                    if res["metadata"]["name"] in names or "_all" in names
+                    else []
                 )
-            # else the list was empty/none, we dont' add anything to collected
-        elif "metadata" in res:
-            # we got a single item
-            collected.extend(
-                [{"res": res, "gen_ts": gen_ts}]
-                if res["metadata"]["name"] in names or "_all" in names
-                else []
-            )
-
+        else:
+            if "items" in res:
+                # we got a list
+                if res["items"] is not None and len(res["items"]) > 0:
+                    result = res["items"]
+                    for t in result:
+                        collect = dict()
+                        head = ''
+                        for keys in key_trace_list:
+                            r = t
+                            for key in keys:
+                                try:
+                                    if r[key]:
+                                        r = r[key]
+                                        head = key
+                                except Exception as err:
+                                    r = "None"
+                                    head = key
+                            if type(r) is dict:
+                                r = list(r.keys())[0]
+                            collect[head] = r
+                            header.append(head)
+                        collected.extend(
+                            [collect]
+                        )
+                # else the list was empty/none, we dont' add anything to collected
+            else:
+                # we got a single item
+                collect = dict()
+                head = ''
+                for keys in key_trace_list:
+                    r = res
+                    for key in keys:
+                        try:
+                            if r[key]:
+                                r = r[key]
+                                head = key
+                        except Exception as err:
+                            r = "None"
+                            head = key
+                    if type(r) is dict:
+                        r = list(r.keys())[0]
+                    collect[head] = r
+                    header.append(head)
+                collected.extend(
+                    [collect]
+                )
     return collected
+
+
+def get_key_trace_list(key_trace):
+    key_list = [j for j in key_trace.split(',')]
+    key_trace_list = []
+    for key in key_list:
+        key_trace_list.append([k for k in key.split('/')])
+    return key_trace_list
 
 
 def from_yaml_dir(t, ns, names):

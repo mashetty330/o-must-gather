@@ -1,21 +1,33 @@
 # -*- coding: utf-8 -*-
+from typing import Any
+
 import json
 import sys
 import yaml
 from click import Context
 
 from omg.cmd.get import parse
+from omg.cmd.get.get_count import get_count
 from omg.common.config import Config
 from omg.common.resource_map import map_res, map
 
 
+custom_get = ["storageclusterdetails", "scd", "storagedetails", "ocsclusterdetails", "ocsdetails"]
+
+
 def get_resources(r_type, r_name="_all", ns=None, print_warnings=True):
     rt_info = map_res(r_type)
-    get_func = rt_info["get_func"]
+    get_func: Any = rt_info["get_func"]
     yaml_loc = rt_info["yaml_loc"]
     need_ns = rt_info["need_ns"]
+    key_trace = None
+    try:
+        if rt_info["key_trace"]:
+            key_trace = rt_info["key_trace"]
+    except Exception as err:
+        pass
 
-    return get_func(ns, r_name, yaml_loc, need_ns, print_warnings)
+    return get_func(ns, r_name, yaml_loc, need_ns, key_trace, print_warnings)
 
 
 def get_resource_names(r_type, r_name="_all", ns=None):
@@ -25,10 +37,16 @@ def get_resource_names(r_type, r_name="_all", ns=None):
 
 
 # The high level function that gets called for any "get" command
-def get_main(objects, output, namespace, all_namespaces, show_labels):
+def get_main(objects, output, namespace, all_namespaces, show_labels, count, show_output):
     # Check if -A/--all-namespaces is set
     # else, Set the namespace
     # -n/--namespace takes precedence over current project
+
+    result = None
+    if count and (output is not None or show_labels):
+        print("ERROR: Cant specify the output format or show-labels when you only need the count of resources!")
+        return
+
     if all_namespaces is True:
         ns = "_all"
     else:
@@ -53,11 +71,12 @@ def get_main(objects, output, namespace, all_namespaces, show_labels):
     printed_something = False
 
     for r_type, r_name in resource_list:
-
         res = get_resources(r_type, r_name, ns)
-
         if len(res) > 0:
             # If printing multiple objects, add a blank line between each
+            if count:
+                printed_something, result = get_count(r_type, res, show_output)
+                break
             if printed_something:
                 print("")
             # Yaml dump if -o yaml
@@ -94,11 +113,12 @@ def get_main(objects, output, namespace, all_namespaces, show_labels):
                 else:
                     show_type = False
                 getout_func = map_res(r_type)["getout_func"]
-                getout_func(r_type, ns, res, output, show_type, show_labels)
+                result = getout_func(r_type, ns, res, output, show_type, show_labels, show_output)
 
             # We printed something
             printed_something = True
 
     # Error out if nothing was printed
-    if not printed_something:
+    if not printed_something and show_output:
         print("No resources found in %s namespace" % ns)
+    return result
