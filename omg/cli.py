@@ -72,6 +72,9 @@ def projects_cmd():
 @cli.command("check")
 @click.argument("something", nargs=-1)
 def check_cmd(something):
+    """
+    [TEDC] Check the cluster for some configurations
+    """
     check(something)
 
 
@@ -88,7 +91,7 @@ def check_cmd(something):
 @global_namespace_options
 def get_cmd(objects, output, namespace, all_namespaces, show_labels, count):
     """
-    Display one or many resources
+    [TEDC] Display one or many resources in the cluster
     """
     r_dict = check_if_custom(objects)
     if r_dict:
@@ -130,9 +133,9 @@ def whoami_cmd():
 @cli.command("version")
 def version_cmd():
     """
-    Display omg version
+    [TEDC] Display TEDC version
     """
-    print("omg version " + version + " (https://github.com/kxr/o-must-gather)")
+    print("TEDC version " + version + " (https://github.com/mashetty330/o-must-gather)")
 
 
 @cli.command("completion")
