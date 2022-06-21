@@ -19,11 +19,8 @@ dependencies = [
 setup(
     name="o-must-gather",
     version=omg.version,
-    url="https://github.com/kxr/o-must-gather",
-    license="GPLv3",
-    author="Khizer Naeem",
-    author_email="khizernaeem@gmail.com",
-    description="oc like tool that works with must-gather rather than OpenShift API",
+    url="https://github.com/mashetty330/o-must-gather",
+    description="oc like tool that works with ODF must-gather helps fetch information about the storage-cluster",
     long_description=__doc__,
     packages=find_packages(),
     include_package_data=True,
@@ -32,19 +29,7 @@ setup(
     install_requires=dependencies,
     entry_points={
         "console_scripts": [
-            "omg = omg.cli:cli",
+            "tedc = omg.cli:cli",
         ],
     },
-    classifiers=[
-        # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-        "Development Status :: 5 - Production/Stable",
-        "Environment :: Console",
-        "Intended Audience :: System Administrators",
-        "License :: OSI Approved :: BSD License",
-        "Operating System :: POSIX",
-        "Operating System :: MacOS",
-        "Operating System :: Unix",
-        "Programming Language :: Python :: 3",
-        "Topic :: Utilities",
-    ],
 )
